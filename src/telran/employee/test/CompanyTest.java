@@ -9,12 +9,16 @@ import telran.employee.model.Manager;
 import telran.employee.model.SalesManager;
 import telran.employee.model.WageEmployee;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CompanyTest {
     private Company company;
     private Employee[] employees;
     private final int capacity = 5;
+    private final Comparator<Employee> comparator = (e1, e2) -> Integer.compare(e1.getId(), e2.getId());
 
     @BeforeEach
     void setUp() {
@@ -35,7 +39,7 @@ class CompanyTest {
         assertFalse(company.addEmployee(employees[2]));
         Employee employee = new SalesManager(5000, "Peter", "Jackson", 182, 40_000, 0.1);
         assertTrue(company.addEmployee(employee));
-        assertEquals(5,company.quantity());
+        assertEquals(5, company.quantity());
         employee = new SalesManager(6000, "Peter", "Jackson", 182, 40_000, 0.1);
         assertFalse(company.addEmployee(employee));
     }
@@ -43,8 +47,8 @@ class CompanyTest {
     @Test
     void testRemoveEmployee() {
         Employee employee = company.removeEmployee(3000);
-        assertEquals(employees[2],employee);
-        assertEquals(3,company.quantity());
+        assertEquals(employees[2], employee);
+        assertEquals(3, company.quantity());
         assertNull(company.removeEmployee(3000));
     }
 
@@ -56,22 +60,22 @@ class CompanyTest {
 
     @Test
     void testQuantity() {
-        assertEquals(4,company.quantity());
+        assertEquals(4, company.quantity());
     }
 
     @Test
     void testTotalSalary() {
-       assertEquals(44380.0,company.totalSalary() ,0.01);
+        assertEquals(44380.0, company.totalSalary(), 0.01);
     }
 
     @Test
     void testAvgSalary() {
-        assertEquals(44380.0 /4,company.avgSalary() ,0.01);
+        assertEquals(44380.0 / 4, company.avgSalary(), 0.01);
     }
 
     @Test
     void testTotalSales() {
-        assertEquals(120_000, company.totalSales(),0.01);
+        assertEquals(120_000, company.totalSales(), 0.01);
     }
 
     @Test
@@ -80,16 +84,18 @@ class CompanyTest {
     }
 
     @Test
-    void testFindEmployeesHoursGreaterThan(){
+    void testFindEmployeesHoursGreaterThan() {
         Employee[] actual = company.findEmployeesHoursGreaterThan(100);
-        Employee[] expected ={employees[0],employees[1],employees[2]};
+        Arrays.sort(actual,comparator);
+        Employee[] expected = {employees[0], employees[1], employees[2]};
         assertArrayEquals(expected, actual);
     }
 
     @Test
-    void testFindEmployeesSalaryBetween(){
-        Employee[] actual = company.findEmployeesSalaryBetween(5000,8000);
-        Employee[] expected ={employees[1],employees[2]};
+    void testFindEmployeesSalaryBetween() {
+        Employee[] actual = company.findEmployeesSalaryBetween(5000, 8000);
+        Arrays.sort(actual,comparator);
+        Employee[] expected = {employees[1], employees[2]};
         assertArrayEquals(expected, actual);
     }
 }
